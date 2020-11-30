@@ -1,0 +1,23 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+{% block head %}HEAD{% endblock %}
+
+<body>
+
+<div class="super_container">
+
+    {% include 'inc/_header.html' %}
+
+    {% block content %}CONTENT{% endblock %}
+
+    {% include 'inc/_footer.html' %}
+
+
+</div>
+
+{% block scripts %} SCRIPTS {% endblock %}
+</body>
+
+</html>
