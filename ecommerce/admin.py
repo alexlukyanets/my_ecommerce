@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.utils.safestring import mark_safe
-
+from mptt.admin import DraggableMPTTAdmin
 from .models import *
 
 
@@ -39,9 +39,20 @@ class ProductAdmin(admin.ModelAdmin):
     get_photo.short_description = 'Миниатюра'
 
 
+admin.site.register(
+    Category,
+    DraggableMPTTAdmin,
+    list_display=(
+        'tree_actions',
+        'indented_title',
+        # ...more fields if you feel like it...
+    ),
+    list_display_links=(
+        'indented_title',
+    ),
+)
 admin.site.register(ProductImage, ProductImageAdmin)
 admin.site.register(Product, ProductAdmin)
-admin.site.register(Category, CategoryAdmin)
 
 admin.site.register(OrderProduct)
 admin.site.register(Order)

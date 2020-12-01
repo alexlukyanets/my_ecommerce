@@ -1,4 +1,6 @@
 from django.shortcuts import render
+from django.utils.functional import SimpleLazyObject
+
 from .models import *
 from django.views.generic import ListView, DetailView
 from django.db.models import F
@@ -20,9 +22,10 @@ class GetProduct(DetailView):
     allow_empty = False
 
     def get_context_data(self, **kwargs):
-        print(self.request.user)
-        view = View(views_by=self.request.user, product_id=self.object.id)
-        view.save()
+        if str(self.request.user) != "AnonymousUser":
+            view = View(views_by=self.request.user, product_id=self.object.id)
+            view.save()
+
         context = super().get_context_data(**kwargs)
 
         self.object.views = F('views') + 1
@@ -35,7 +38,13 @@ class Shop(ListView):
     model = Product
     template_name = 'ecommerce/shop.html'
     context_object_name = 'products'
-    paginate_by = 5
+    paginate_by = 20
+
+    def get_queryset(self):
+        if self.kwargs:
+            return Product.objects.filter(category__slug=self.kwargs['slug'])
+        else:
+            return Product.objects.all()
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)

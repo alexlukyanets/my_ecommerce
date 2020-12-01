@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'ecommerce.apps.EcommerceConfig',
     'colorfield',
+    'mptt',
 ]
 
 MIDDLEWARE = [

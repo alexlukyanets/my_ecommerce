@@ -3,6 +3,7 @@ from django.db import models
 from colorfield.fields import ColorField
 from django.urls import reverse
 from django.contrib.auth.models import User
+from mptt.models import MPTTModel, TreeForeignKey
 
 
 class Product(models.Model):
@@ -50,9 +51,10 @@ class Order(models.Model):
         return self.title
 
 
-class Category(models.Model):
+class Category(MPTTModel):
     title = models.CharField(max_length=150, db_index=True, verbose_name='Категории')
     slug = models.SlugField(max_length=255, verbose_name='Url', unique=True)
+    parent = TreeForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='children')
 
     def __str__(self):
         return self.title
@@ -64,6 +66,9 @@ class Category(models.Model):
 
     def get_absolute_url(self):
         return reverse('category', kwargs={'slug': self.slug})
+
+    class MPTTMeta:
+        order_insertion_by = ['title']
 
 
 class ProductImage(models.Model):
@@ -96,7 +101,7 @@ class Color(models.Model):
 
 class View(models.Model):
     date = models.DateTimeField(auto_now_add=True, verbose_name='Дата просмотра')
-    views_by = models.ForeignKey(User, max_length=127, on_delete=models.CASCADE, blank=True)
+    views_by = models.ForeignKey(User, max_length=127, on_delete=models.CASCADE, blank=True, null=True)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
 
     def __str__(self):
