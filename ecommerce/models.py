@@ -13,7 +13,7 @@ class Product(models.Model):
     model = models.CharField(max_length=50, verbose_name='Модель', null=True, blank=True)
     description = models.TextField(blank=True, verbose_name='Описание')
     price = models.FloatField(verbose_name='Цена')
-    count = models.IntegerField(verbose_name='Количество')
+    count = models.IntegerField(verbose_name='Количество', default=0)
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата добавления')
     update_at = models.DateTimeField(auto_now=True, verbose_name='Дата обновления')
     category = models.ForeignKey('Category', on_delete=models.PROTECT, null=True, verbose_name='Категория')
@@ -32,11 +32,27 @@ class Product(models.Model):
     def get_absolute_url(self):
         return reverse('product', kwargs={'slug': self.slug})
 
+    def get_add_to_cart_url(self):
+        return reverse("add-to-cart", kwargs={
+            'slug': self.slug
+        })
+
+    def remove_from_card_url(self):
+        return reverse("remove-from-cart", kwargs={
+            'slug': self.slug
+        })
+
+
+
 class OrderProduct(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL,
+                             on_delete=models.CASCADE, blank=True, null=True)
+    ordered = models.BooleanField(default=False)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    quantity = models.IntegerField(verbose_name='Количество', default=1)
 
     def __str__(self):
-        return self.title
+        return f"{self.quantity} of {self.product.name}"
 
 
 class Order(models.Model):
@@ -48,7 +64,7 @@ class Order(models.Model):
     ordered = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.title
+        return str(self.user)
 
 
 class Category(MPTTModel):

@@ -21,25 +21,25 @@
         <div class="container">
             <div class="row">
                 {#                       <li data-image=""><img src="{{ product.head_images.url }}" alt=""></li>#}
-{#                        {% for image in product.images.all %}#}
-{#                        <li data-image=""><img src="{{ image.image.url }}" alt=""></li>#}
-{#                        {% endfor %}#}
-            {#                    <div class="image_selected"><img src="{{ product.head_images.url }}" alt=""></div>#}
+                {#                        {% for image in product.images.all %}#}
+                {#                        <li data-image=""><img src="{{ image.image.url }}" alt=""></li>#}
+                {#                        {% endfor %}#}
+                {#                    <div class="image_selected"><img src="{{ product.head_images.url }}" alt=""></div>#}
                 <!-- Images -->
-				<div class="col-lg-2 order-lg-1 order-2">
-					<ul class="image_list">
-						<li data-image="{{ product.head_images.url }}"><img src="{{ product.head_images.url }}" alt=""></li>
+                <div class="col-lg-2 order-lg-1 order-2">
+                    <ul class="image_list">
+                        <li data-image="{{ product.head_images.url }}"><img src="{{ product.head_images.url }}" alt=""></li>
 
                         {% for image in product.images.all %}
-                        <li data-image="{{ image.image.url }}"><img src="{{ image.image.url }}" alt=""></li>
+                            <li data-image="{{ image.image.url }}"><img src="{{ image.image.url }}" alt=""></li>
                         {% endfor %}
-					</ul>
-				</div>
+                    </ul>
+                </div>
 
-				<!-- Selected Image -->
-				<div class="col-lg-5 order-lg-2 order-1">
-					<div class="image_selected"><img src="{{ product.head_images.url }}" alt=""></div>
-				</div>
+                <!-- Selected Image -->
+                <div class="col-lg-5 order-lg-2 order-1">
+                    <div class="image_selected"><img src="{{ product.head_images.url }}" alt=""></div>
+                </div>
 
                 <!-- Description -->
                 <div class="col-lg-5 order-3">
@@ -84,7 +84,13 @@
 
                                 <div class="product_price">{{ product.price }}</div>
                                 <div class="button_container">
-                                    <button type="button" class="button cart_button">Add to Cart</button>
+                                    <a href="{{ product.get_add_to_cart_url }}">
+                                        <button type="button" class="button cart_button">Add to Cart</button>
+                                    </a>
+                                    <a href="{{ product.remove_from_card_url }}">
+                                        <button type="button" class="button cart_button">Remove from Cart</button>
+                                    </a>
+
                                     <div class="product_fav"><i class="fas fa-heart"></i></div>
                                 </div>
 

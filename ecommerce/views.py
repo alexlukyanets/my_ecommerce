@@ -1,6 +1,6 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404, redirect
 from django.utils.functional import SimpleLazyObject
-
+from django.utils import timezone
 from .models import *
 from django.views.generic import ListView, DetailView
 from django.db.models import F
@@ -56,3 +56,55 @@ class Shop(ListView):
 
 def cart(request):
     return render(request, 'ecommerce/cart.html')
+
+
+def add_to_cart(request, slug):
+    product = get_object_or_404(Product, slug=slug)
+    order_item, created = OrderProduct.objects.get_or_create(
+        product=product,
+        user=request.user,
+        ordered=False
+    )
+    order_qs = Order.objects.filter(user=request.user, ordered=False)
+    if order_qs.exists():
+        order = order_qs[0]
+        # chech if the order item is in the order
+        if order.products.filter(product__slug=product.slug).exists():
+            order_item.quantity += 1
+            order_item.save()
+        else:
+            order.products.add(order_item)
+
+    else:
+        ordered_date = timezone.now()
+        order = Order.objects.create(user=request.user, ordered_date=ordered_date)
+        order.products.add(order_item)
+
+    return redirect("product", slug=slug)
+
+#48:53
+def remove_from_card(request, slug):
+    product = get_object_or_404(Product, slug=slug)
+    order_qs = Order.objects.filter(
+        user=request.user,
+        ordered=False
+    )
+    if order_qs.exists():
+        order = order_qs[0]
+        # chech if the order item is in the order
+        if order.products.filter(product__slug=product.slug).exists():
+            order_item = OrderProduct.objects.filter(
+                product=product,
+                user=request.user,
+                ordered=False
+            )[0]
+            order.products.remove(order_item)
+        else:
+            return redirect("product", slug=slug)
+
+
+    else:
+        # add a massage saying the user doesn't have an order
+        return redirect("product", slug=slug)
+
+    return redirect("product", slug=slug)
