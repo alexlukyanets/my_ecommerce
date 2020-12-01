@@ -1,6 +1,5 @@
 {% extends 'base.html' %}
 {% load static %}
-
 {% block head %}
     {% include 'styles/_shop.html' %}
 {% endblock %}
@@ -9,19 +8,21 @@
     {% include 'scripts/_shop.html' %}
 {% endblock %}
 
+
+
 {%  block content %}
     <!-- Home -->
-
-    <div class="home">
-        <div class="home_background parallax-window" data-parallax="scroll" data-image-src="/static/ecommerce/images/shop_background.jpg"></div>
-        <div class="home_overlay"></div>
-        <div class="home_content d-flex flex-column align-items-center justify-content-center">
-            <h2 class="home_title">Smartphones & Tablets</h2>
+    {% if title_category %}
+        <div class="home">
+            <div class="home_background parallax-window" data-parallax="scroll" data-image-src="/static/ecommerce/images/shop_background.jpg"></div>
+            <div class="home_overlay"></div>
+            <div class="home_content d-flex flex-column align-items-center justify-content-center">
+                <h2 class="home_title">{{ title_category }}</h2>
+            </div>
         </div>
-    </div>
+    {% endif %}
 
     <!-- Shop -->
-
     <div class="shop">
         <div class="container">
             <div class="row">
@@ -30,17 +31,11 @@
                     <!-- Shop Sidebar -->
                     <div class="shop_sidebar">
                         <div class="sidebar_section">
-                            <div class="sidebar_title">Categories</div>
+                            <div class="sidebar_title">Категории</div>
                             <ul class="sidebar_categories">
-                                <li><a href="#">Computers & Laptops</a></li>
-                                <li><a href="#">Cameras & Photos</a></li>
-                                <li><a href="#">Hardware</a></li>
-                                <li><a href="#">Smartphones & Tablets</a></li>
-                                <li><a href="#">TV & Audio</a></li>
-                                <li><a href="#">Gadgets</a></li>
-                                <li><a href="#">Car Electronics</a></li>
-                                <li><a href="#">Video Games & Consoles</a></li>
-                                <li><a href="#">Accessories</a></li>
+                                {% for category in categories %}
+                                    <li><a href="{{category.get_absolute_url}}">{{ category.title }}</a></li>
+                                {% endfor %}
                             </ul>
                         </div>
                         <div class="sidebar_section filter_by_section">
