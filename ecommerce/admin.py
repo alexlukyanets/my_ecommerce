@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.utils.safestring import mark_safe
 
 from .models import *
 
@@ -24,11 +25,18 @@ class ProductImageInline(admin.StackedInline):
 
 class ProductAdmin(admin.ModelAdmin):
     prepopulated_fields = {'slug': ('name',)}
-    list_display = ('id', 'name', 'price', 'category', 'count', 'model', 'created_at')
+    list_display = ('id', 'name', 'price', 'category', 'count', 'model', 'created_at', 'get_photo', 'views')
     list_display_links = ('id', 'name')
     search_fields = ('name', 'description')
     inlines = [ProductImageInline, ]
     readonly_fields = ('views', 'created_at', 'update_at')
+
+    def get_photo(self, obj):
+        if obj.head_images:
+            return mark_safe(f'<img src = "{obj.head_images.url}" width="50">')
+        return '-'
+
+    get_photo.short_description = 'Миниатюра'
 
 
 admin.site.register(ProductImage, ProductImageAdmin)
@@ -39,3 +47,4 @@ admin.site.register(OrderProduct)
 admin.site.register(Order)
 admin.site.register(Color)
 admin.site.register(Brand)
+admin.site.register(View)

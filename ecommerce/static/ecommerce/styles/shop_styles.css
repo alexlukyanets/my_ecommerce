@@ -1607,7 +1607,7 @@ select option
 	-o-transition: all 200ms ease;
 	transition: all 200ms ease;
 }
-.page_prev:hover i, 
+.page_prev:hover i,
 .page_next:hover i
 {
 	color: #636363;
@@ -1634,7 +1634,7 @@ select option
 	border-right: solid 1px #e5e5e5;
 	cursor: pointer;
 }
-.page_nav li a
+.page_nav a
 {
 	font-weight: 500;
 	color: rgba(0,0,0,0.7);
@@ -1644,9 +1644,9 @@ select option
 	-o-transition: all 200ms ease;
 	transition: all 200ms ease;
 }
-.page_nav li:hover a
+.page_nav hover a
 {
-	color: #0e8ce4;
+	color: #B0C4DE;
 }
 .page_nav li:last-child
 {
