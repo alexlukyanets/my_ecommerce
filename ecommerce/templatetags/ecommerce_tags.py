@@ -1,4 +1,4 @@
-from ecommerce.models import Category
+from ecommerce.models import Category, Order
 from django import template
 from django.db.models import Count
 

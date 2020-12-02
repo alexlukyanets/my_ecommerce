@@ -13,6 +13,7 @@ class Product(models.Model):
     model = models.CharField(max_length=50, verbose_name='Модель', null=True, blank=True)
     description = models.TextField(blank=True, verbose_name='Описание')
     price = models.FloatField(verbose_name='Цена')
+    discount_price = models.FloatField(verbose_name='Цена со скидкой', blank=True, null=True)
     count = models.IntegerField(verbose_name='Количество', default=0)
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата добавления')
     update_at = models.DateTimeField(auto_now=True, verbose_name='Дата обновления')
@@ -53,6 +54,20 @@ class OrderProduct(models.Model):
     def __str__(self):
         return f"{self.quantity} of {self.product.name}"
 
+    def get_total_item_price(self):
+        return self.quantity * self.product.price
+
+    def get_total_discount_item_price(self):
+        return self.quantity * self.product.discount_price
+
+    def get_total_amount_saved(self):
+        return self.get_total_item_price() - self.get_total_discount_item_price()
+
+    def get_final_price(self):
+        if self.product.discount_price:
+            return self.get_total_discount_item_price()
+        return self.get_total_item_price()
+
 
 class Order(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL,
@@ -64,6 +79,16 @@ class Order(models.Model):
 
     def __str__(self):
         return str(self.user)
+
+    def get_total(self):
+        total = 0
+        for order_product in self.products.all():
+            total += order_product.get_final_price()
+        return total
+
+    def get_product_count(self):
+        return self.products.count()
+
 
 
 class Category(MPTTModel):
