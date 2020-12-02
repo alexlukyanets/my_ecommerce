@@ -1,10 +1,16 @@
+from django.contrib.auth import login, logout
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils.functional import SimpleLazyObject
 from django.utils import timezone
 from .models import *
-from django.views.generic import ListView, DetailView
+from django.views.generic import ListView, DetailView, View as Views
 from django.db.models import F
 from django.contrib.auth.models import User
+from django.contrib import messages
+from .forms import *
 
 
 def item_list(request):
@@ -54,10 +60,24 @@ class Shop(ListView):
         return context
 
 
+class OrderSummaryView(LoginRequiredMixin, Views):
+    def get(self, *args, **kwargs):
+        try:
+            order = Order.objects.get(user=self.request.user, ordered=False)
+            context = {
+                "object": order
+            }
+            return render(self.request, 'ecommerce/cart.html', context)
+        except ObjectDoesNotExist:
+            messages.error(self.request, "You don't have an active order")
+            return redirect('/')
+
+
 def cart(request):
     return render(request, 'ecommerce/cart.html')
 
 
+@login_required
 def add_to_cart(request, slug):
     product = get_object_or_404(Product, slug=slug)
     order_item, created = OrderProduct.objects.get_or_create(
@@ -72,39 +92,88 @@ def add_to_cart(request, slug):
         if order.products.filter(product__slug=product.slug).exists():
             order_item.quantity += 1
             order_item.save()
+            messages.info(request, "This item quantity was updated")
+            return redirect("product", slug=slug)
         else:
             order.products.add(order_item)
+            messages.info(request, "This item was added to your cart")
+            return redirect("product", slug=slug)
 
     else:
         ordered_date = timezone.now()
+
         order = Order.objects.create(user=request.user, ordered_date=ordered_date)
         order.products.add(order_item)
+        messages.info(request, "This was added to your cart")
 
     return redirect("product", slug=slug)
 
-#48:53
+
+@login_required
 def remove_from_card(request, slug):
     product = get_object_or_404(Product, slug=slug)
     order_qs = Order.objects.filter(
         user=request.user,
         ordered=False
     )
+    for i in order_qs:
+        print(i.products)
     if order_qs.exists():
         order = order_qs[0]
+        # print(order.products)
         # chech if the order item is in the order
+        # print(order.products.all())
+        # print(order.products.filter(product__slug=product.slug))
         if order.products.filter(product__slug=product.slug).exists():
             order_item = OrderProduct.objects.filter(
                 product=product,
                 user=request.user,
                 ordered=False
             )[0]
+            print(order_item)
             order.products.remove(order_item)
+            messages.info(request, "This was removed to your cart")
         else:
+            messages.error(request, "This item was not in your cart")
             return redirect("product", slug=slug)
 
 
     else:
-        # add a massage saying the user doesn't have an order
+        messages.error(request, "You don't have an active order")
         return redirect("product", slug=slug)
 
     return redirect("product", slug=slug)
+
+
+def register(request):
+    if request.method == 'POST':
+        form = UserRegisterFrom(request.POST)
+
+        if form.is_valid():
+            messages.success(request, 'Вы успешно заригестрированы!')
+            user = form.save()
+            login(request, user)
+            return redirect('/')
+        else:
+            messages.error(request, 'Ошибка регистрации')
+    else:
+        form = UserRegisterFrom()
+
+    return render(request, 'ecommerce/register.html', {'form': form})
+
+
+def user_login(request):
+    if request.method == "POST":
+        form = UserLoginFrom(data=request.POST)
+        if form.is_valid():
+            user = form.get_user()
+            login(request, user)
+            return redirect('/')
+    else:
+        form = UserLoginFrom()
+    return render(request, 'ecommerce/login.html', {'form': form})
+
+
+def user_logout(request):
+    logout(request)
+    return redirect('login')

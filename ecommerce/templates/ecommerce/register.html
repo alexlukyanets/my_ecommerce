@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block head %}
+    {% include 'styles/_shop.html' %}
+{% endblock %}
+
+
+{% block scripts %}
+    {% include 'scripts/_shop.html' %}
+{% endblock %}
+
+{% block content %}
+    <div class="login">
+        <h2>Регистрация</h2>
+
+        <form action="{% url 'register' %}" method="post">
+            {% csrf_token %}
+
+            {{  form.as_p }}
+
+            <button type="submit" class="btn btn-primary btn-block">Регистрация</button>
+
+        </form>
+
+    </div>
+
+
+
+{% endblock %}
