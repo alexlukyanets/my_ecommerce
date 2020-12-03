@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     'ecommerce.apps.EcommerceConfig',
     'colorfield',
     'mptt',
+    'django_countries',
+    'crispy_forms',
 ]
 
 MIDDLEWARE = [

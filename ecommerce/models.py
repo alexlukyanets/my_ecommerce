@@ -4,6 +4,7 @@ from colorfield.fields import ColorField
 from django.urls import reverse
 from django.contrib.auth.models import User
 from mptt.models import MPTTModel, TreeForeignKey
+from django_countries.fields import CountryField
 
 
 class Product(models.Model):
@@ -90,7 +91,6 @@ class Order(models.Model):
         return self.products.count()
 
 
-
 class Category(MPTTModel):
     title = models.CharField(max_length=150, db_index=True, verbose_name='Категории')
     slug = models.SlugField(max_length=255, verbose_name='Url', unique=True)
@@ -166,3 +166,27 @@ class Brand(models.Model):
 
     def get_absolute_url(self):
         return reverse('post', kwargs={'title': self.title})
+
+
+ADDRESS_CHOICES = (
+    ('B', 'Billing'),
+    ('S', 'Shipping'),
+)
+
+
+
+class Address(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL,
+                             on_delete=models.CASCADE)
+    street_address = models.CharField(max_length=100)
+    apartment_address = models.CharField(max_length=100)
+    country = CountryField(multiple=False)
+    zip = models.CharField(max_length=100)
+    address_type = models.CharField(max_length=1, choices=ADDRESS_CHOICES)
+    default = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.user.username
+
+    class Meta:
+        verbose_name_plural = 'Addresses'

@@ -12,28 +12,28 @@
             <div class="row">
                 <div class="col d-flex flex-row">
                     <div class="top_bar_contact_item"><div class="top_bar_icon"><img src="{% static "ecommerce/images/phone.png"%}" alt=""></div>+38 097 10 30 720</div>
-{#                    <div class="top_bar_contact_item"><div class="top_bar_icon"><img src="{% static "ecommerce/images/mail.png"%}" alt=""></div><a href="mailto:fastsales@gmail.com">alexlukyanets@gmail.com</a></div>#}
+                    {#                    <div class="top_bar_contact_item"><div class="top_bar_icon"><img src="{% static "ecommerce/images/mail.png"%}" alt=""></div><a href="mailto:fastsales@gmail.com">alexlukyanets@gmail.com</a></div>#}
                     <div class="top_bar_content ml-auto">
-{#                        <div class="top_bar_menu">#}
-{#                            <ul class="standard_dropdown top_bar_dropdown">#}
-                                {#                                <li>#}
-                                {#                                    <a href="#">English<i class="fas fa-chevron-down"></i></a>#}
-                                {#                                    <ul>#}
-                                {#                                        <li><a href="#">Italian</a></li>#}
-                                {#                                        <li><a href="#">Spanish</a></li>#}
-                                {#                                        <li><a href="#">Japanese</a></li>#}
-                                {#                                    </ul>#}
-                                {#                                </li>#}
-{#                                <li>#}
-                                    {#                                    <a href="#">$ US dollar<i class="fas fa-chevron-down"></i></a>#}
-                                    {#                                    <ul>#}
-                                    {#                                        <li><a href="#">EUR Euro</a></li>#}
-                                    {#                                        <li><a href="#">GBP British Pound</a></li>#}
-                                    {#                                        <li><a href="#">JPY Japanese Yen</a></li>#}
-                                    {#                                    </ul>#}
-{#                                </li>#}
-{#                            </ul>#}
-{#                        </div>#}
+                        {#                        <div class="top_bar_menu">#}
+                        {#                            <ul class="standard_dropdown top_bar_dropdown">#}
+                        {#                                <li>#}
+                        {#                                    <a href="#">English<i class="fas fa-chevron-down"></i></a>#}
+                        {#                                    <ul>#}
+                        {#                                        <li><a href="#">Italian</a></li>#}
+                        {#                                        <li><a href="#">Spanish</a></li>#}
+                        {#                                        <li><a href="#">Japanese</a></li>#}
+                        {#                                    </ul>#}
+                        {#                                </li>#}
+                        {#                                <li>#}
+                        {#                                    <a href="#">$ US dollar<i class="fas fa-chevron-down"></i></a>#}
+                        {#                                    <ul>#}
+                        {#                                        <li><a href="#">EUR Euro</a></li>#}
+                        {#                                        <li><a href="#">GBP British Pound</a></li>#}
+                        {#                                        <li><a href="#">JPY Japanese Yen</a></li>#}
+                        {#                                    </ul>#}
+                        {#                                </li>#}
+                        {#                            </ul>#}
+                        {#                        </div>#}
                         <div class="top_bar_user">
 
 
@@ -123,18 +123,18 @@
                             <div class="cart_container d-flex flex-row align-items-center justify-content-end">
                                 <div class="cart_icon">
                                     <img src="{% static "ecommerce/images/cart.png" %}" alt="">
-                                    <div class="cart_count"><span>10</span></div>
+                                    <div class="cart_count"><span>{{ request.user|cart_item_count }}</span></div>
                                 </div>
                                 <div class="cart_content">
                                     <div class="cart_text"><a href="{% url 'cart' %}">Cart</a></div>
-                                    <div class="cart_price"{{ object.get_total }}</div>
-                                </div>
+                                    <div class="cart_price">{{ request.user|cart_item_total }}</div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
     </div>
 
     <!-- Main Navigation -->
@@ -188,7 +188,6 @@
                         </div>
 
                         <!-- Main Nav Menu -->
-
                         <div class="main_nav_menu ml-auto">
                             <ul class="standard_dropdown main_nav_dropdown">
                                 <li><a href="#">Home<i class="fas fa-chevron-down"></i></a></li>

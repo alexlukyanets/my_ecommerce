@@ -93,11 +93,11 @@ def add_to_cart(request, slug):
             order_item.quantity += 1
             order_item.save()
             messages.info(request, "This item quantity was updated")
-            return redirect("product", slug=slug)
+            return redirect("cart")
         else:
             order.products.add(order_item)
             messages.info(request, "This item was added to your cart")
-            return redirect("product", slug=slug)
+            return redirect("cart")
 
     else:
         ordered_date = timezone.now()
@@ -106,7 +106,40 @@ def add_to_cart(request, slug):
         order.products.add(order_item)
         messages.info(request, "This was added to your cart")
 
-    return redirect("product", slug=slug)
+    return redirect("cart")
+
+
+class CheckoutView(Views):
+    def get(self, *args, **kwargs):
+        try:
+            order = Order.objects.get(user=self.request.user, ordered=False)
+            form = CheckoutForm()
+            context = {
+                'form': form,
+                'order': order,
+            }
+
+            shipping_address_qs = Address.objects.filter(
+                user=self.request.user,
+                address_type='S',
+                default=True
+            )
+            if shipping_address_qs.exists():
+                context.update(
+                    {'default_shipping_address': shipping_address_qs[0]})
+
+            billing_address_qs = Address.objects.filter(
+                user=self.request.user,
+                address_type='B',
+                default=True
+            )
+            if billing_address_qs.exists():
+                context.update(
+                    {'default_billing_address': billing_address_qs[0]})
+            return render(self.request, "ecommerce/checkout.html", context)
+        except ObjectDoesNotExist:
+            messages.info(self.request, "You do not have an active order")
+            return redirect("checkout")
 
 
 @login_required
@@ -143,6 +176,37 @@ def remove_from_card(request, slug):
         return redirect("product", slug=slug)
 
     return redirect("product", slug=slug)
+
+
+@login_required
+def remove_single_item_from_cart(request, slug):
+    product = get_object_or_404(Product, slug=slug)
+    order_qs = Order.objects.filter(
+        user=request.user,
+        ordered=False
+    )
+    if order_qs.exists():
+        order = order_qs[0]
+        # check if the order item is in the order
+        if order.products.filter(product__slug=product.slug).exists():
+            order_item = OrderProduct.objects.filter(
+                product=product,
+                user=request.user,
+                ordered=False
+            )[0]
+            if order_item.quantity > 1:
+                order_item.quantity -= 1
+                order_item.save()
+            else:
+                order.products.remove(order_item)
+            messages.info(request, "This item quantity was updated.")
+            return redirect("cart")
+        else:
+            messages.info(request, "This item was not in your cart")
+            return redirect("product", slug=slug)
+    else:
+        messages.info(request, "You do not have an active order")
+        return redirect("product", slug=slug)
 
 
 def register(request):
