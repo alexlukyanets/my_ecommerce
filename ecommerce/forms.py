@@ -5,6 +5,7 @@ from django_countries.fields import CountryField
 from django_countries.widgets import CountrySelectWidget
 from phonenumber_field.formfields import PhoneNumberField
 
+
 class UserLoginFrom(AuthenticationForm):
     username = forms.CharField(label='Имя пользователя', widget=forms.TextInput(attrs={'class': 'form-control'}))
     password = forms.CharField(label='Пароль', widget=forms.PasswordInput(attrs={'class': 'form-control'}))
@@ -33,7 +34,8 @@ class CheckoutForm(forms.Form):
     first_name = forms.CharField(required=False)
     last_name = forms.CharField(required=False)
     phone = PhoneNumberField()
-    
+    email = forms.EmailField(required=False)
+
     # shipping_address = forms.CharField(required=False)
     #
     # shipping_country = CountryField(blank_label='(select country)').formfield(

@@ -814,7 +814,7 @@
                                                 </div>
                                             </div>
                                             <div class="product_fav"><i class="fas fa-heart"></i></div>
-                                            <ul class="product_marks">
+                                 <ul class="product_marks">
                                                 <li class="product_mark product_discount"></li>
                                                 <li class="product_mark product_new">new</li>
                                             </ul>
@@ -1564,7 +1564,8 @@
     <!-- Banner -->
 
     <div class="banner_2">
-        <div class="banner_2_background" style="background-image:url(images/banner_2_background.jpg)"></div>
+        <div class="banner_2_background" style="background-image:url('{% static 'ecommerce/images/banner_2_background.jpg' %}")"></div>
+
         <div class="banner_2_container">
             <div class="banner_2_dots"></div>
             <!-- Banner 2 Slider -->
@@ -3671,8 +3672,8 @@
 
     <!-- Trends -->
 
-    <div class="trends">
-        <div class="trends_background" style="background-image:url(images/trends_background.jpg)"></div>
+    <div class="trends"
+        <div class="trends_background" style="background-image:url('{% static 'ecommerce/images/trends_background.jpg' %}")"></div>
         <div class="trends_overlay"></div>
         <div class="container">
             <div class="row">

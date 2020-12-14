@@ -43,14 +43,18 @@
                                             {#                                                <div class="cart_item_text"><span style="background-color:#999999;"></span>{{ item.product.colors}}</div>#}
                                             {##}
                                             {#                                            </div>#}
-                                            <div class="cart_item_quantity cart_info_col">
-                                                {% if  object.products.all.0  == item %}
-                                                    <div class="cart_item_title">Количество</div>
-                                                {% endif %}
- <a href="{% url 'remove-single-item-from-cart' item.product.slug %}"><i class="fas fa-minus mr-2"></i></a>
-                                                <div class="cart_item_text">{{item.quantity}}</div>
-<a href="{% url 'add-to-cart' item.product.slug %}"><i class="fas fa-plus ml-2"></i></a>
+                                            <div class="Mystyle">
+
+                                                <div class="cart_item_quantity cart_info_col">
+                                                    {% if  object.products.all.0  == item %}
+                                                        <div class="cart_item_title">Количество</div>
+                                                    {% endif %}
+                                                    <a href="{% url 'remove-single-item-from-cart' item.product.slug %}"><i class="fas fa-minus mr-2"></i></a>
+                                                    <div class="cart_item_text">{{item.quantity}}</div>
+                                                    <a href="{% url 'add-to-cart' item.product.slug %}"><i class="fas fa-plus ml-2"></i></a>
+                                                </div>
                                             </div>
+
                                             <div class="cart_item_price cart_info_col">
                                                 {% if  object.products.all.0  == item %}
                                                     <div class="cart_item_title">Цена</div>
